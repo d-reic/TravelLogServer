@@ -39,69 +39,14 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
 
   app.use(passport.initialize());
 
-  // Cats
-  /**
-   * @openapi
-   * tags:
-   *   name: Users
-   *   description: User management and login
-   */
-
-  /**
-   *
-   *
-   * @swagger
-   * components:
-   *   schemas:
-   *     DBObject:
-   *       type: object
-   *       properties:
-   *           _id:
-   *             type: string
-   *             description: An Database ID id.
-   *             example: 60329de352647118c8eb8dee
-   *     User:
-   *       type: object
-   *       properties:
-   *         username:
-   *           type: string
-   *           description: The user's username.
-   *           example: BobMcDonald
-   *         email:
-   *           type: string
-   *           description: The user's email.
-   *           example: BobMcDonald@travellog.com
-   *         role:
-   *           type: string
-   *           enum: [user, admin]
-   *           description: The user's role.
-   *         provider:
-   *           type: string
-   *           enum: [local, remote]
-   *           description: The user's provider.
-   *     NewUser:
-   *       allOf:
-   *         - $ref: '#/components/schemas/User'
-   *         - type: object
-   *           properties:
-   *             password:
-   *               type: string
-   *               description: The user's password.
-   *               example: verysecret
-   *     DBUser:
-   *       allOf:
-   *         - $ref: '#/components/schemas/User'
-   *         - $ref: '#/components/schemas/DBObject'
-   *
-   */
-
   /*
   *  #swagger.tags = ['Users']
   * */
 
   var catroute = require('./routes/cats')(router, jwtAuth);
   var userroute = require('./routes/users')(router, jwtAuth, checkPermission(isAdmin), checkPermission(isAdminOrOwner(userId)), protectRole);
-  var poiroute = require('./routes/pois')(router, jwtAuth,checkPermission(isAdmin), checkPermission(isAdminOrOwner(userId)));
+  var poiroute = require('./routes/pois')(router, jwtAuth,checkPermission(isOwner(poiOwner)), checkPermission(isAdminOrOwner(poiOwner)));
+  var triproute = require('./routes/trips')(router, jwtAuth,checkPermission(isOwner(tripOwner)), checkPermission(isAdminOrOwner(tripOwner)));
   //router.get('/cats/count', jwtAuth, catCtrl.count);
 
 //  router.route('/cats/count').get(jwtAuth, catCtrl.count);

@@ -1,4 +1,4 @@
-import * as logger from "../server/Logger";
+import * as logger from "../server/logger";
 
 
 describe('Create Info Log', () => {

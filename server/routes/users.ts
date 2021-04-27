@@ -1,9 +1,101 @@
-
 import UserCtrl from "../controllers/user";
 
 module.exports = function(router, jwtAuth, isAdmin, isOwner, protectRole) {
   const userCtrl = new UserCtrl();
 
+  /**
+   * @openapi
+   * tags:
+   *   name: Users
+   *   description: User management and login
+   */
+
+  /**
+   *
+   *
+   * @swagger
+   * components:
+   *   schemas:
+   *     AbstractUser:
+   *       type: object
+   *       properties:
+   *         username:
+   *           type: string
+   *           description: The user's username.
+   *           example: BobMcDonald
+   *         email:
+   *           type: string
+   *           description: The user's email.
+   *           example: BobMcDonald@travellog.com
+   *         role:
+   *           type: string
+   *           enum: [user, admin]
+   *           description: The user's role.
+   *         provider:
+   *           type: string
+   *           enum: [local, remote]
+   *           description: The user's provider.
+   *     NewUser:
+   *       allOf:
+   *         - $ref: '#/components/schemas/AbstractUser'
+   *         - type: object
+   *           properties:
+   *             password:
+   *               type: string
+   *               description: The user's password.
+   *               example: verysecret
+   *     DBUser:
+   *       allOf:
+   *         - $ref: '#/components/schemas/AbstractUser'
+   *
+   *
+   */
+
+
+
+  /**
+   * @swagger
+   * /login:
+   *   post:
+   *     summary: Log in to TravelLog
+   *     description:   Log in to TravelLog
+   *     tags:
+   *       - Users
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *                 email:
+   *                   type: string
+   *                   description: The user's email.
+   *                   example: BobMcDonald@travellog.com
+   *                 password:
+   *                   type: string
+   *                   description: The user's password.
+   *                   example: SupersecretPassword
+   *     security:
+   *       - jwt: []
+   *     responses:
+   *       200:
+   *         description: The Token
+   *         content:
+   *           application/json:
+   *             schema:
+   *                 type: object
+   *                 properties:
+   *                   token:
+   *                     type: string
+   *                     description: The Token
+   *                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYwMzE0ZTM2YTE3YjUyM2VmYzc1Mjc4ZSIsInVzZXJuYW1lIjoic2NoaXJnaXRvbSIsImVtYWlsIjoidG9tLnNjaGlyZ2lAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwicHJvdmlkZXIiOiJsb2NhbCIsIl9fdiI6MH0sImlhdCI6MTYxNDg4MzYzNSwiZXhwIjoxNjE0OTEyNDM1fQ
+
+   *       401:
+   *         description: Login Denied
+   *       403:
+   *         description:  Login Denied
+   */
   router.route('/login').post(userCtrl.login);
 
   /**
@@ -182,5 +274,7 @@ module.exports = function(router, jwtAuth, isAdmin, isOwner, protectRole) {
    *         description: Permission insufficient
    */
   router.route('/users/:userId').delete(jwtAuth,isAdmin, userCtrl.delete);
+
+  router.param('userId', userCtrl.load);
 
 }
