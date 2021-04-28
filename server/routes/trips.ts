@@ -119,7 +119,7 @@ module.exports = function (router, jwtAuth, isOwner, isAdminOrOwner) {
    */
   router.route('/trips/mine').get(jwtAuth, tripCtrl.getOwn);
 
-  router.route('/trips').get(jwtAuth, tripCtrl.getPaginated); // TODO: remove pois
+  router.route('/trips').get(jwtAuth, tripCtrl.getPaginated);
 
   /**
    * @swagger
@@ -155,7 +155,7 @@ module.exports = function (router, jwtAuth, isOwner, isAdminOrOwner) {
    *         description: Trip was deleted successfully
    *
    */
-  router.route('/trips/:tripId').delete(jwtAuth, isAdminOrOwner, tripCtrl.delete); //TODO: remove pois
+  router.route('/trips/:tripId').delete(jwtAuth, isAdminOrOwner, poiCtrl.deletePoisFromTrip, tripCtrl.delete);
 
   /**
    * @swagger
@@ -194,7 +194,7 @@ module.exports = function (router, jwtAuth, isOwner, isAdminOrOwner) {
    *              $ref: '#/components/schemas/Trip'
    *
    */
-  router.route('/trips/:tripId/addPOI').post(jwtAuth, isOwner, tripCtrl.addPoiToTrip, tripCtrl.show);
+router.route('/trips/:tripId/addPOI').post(jwtAuth, isOwner, poiCtrl.setCreatorAndLocType, poiCtrl.insert, tripCtrl.addPoiToTrip, tripCtrl.show);
 
   /**
    * @swagger
@@ -216,6 +216,6 @@ module.exports = function (router, jwtAuth, isOwner, isAdminOrOwner) {
    */
   router.route('/trips/:tripId/:poiId').delete(jwtAuth, isOwner, tripCtrl.removePoiFromTrip, tripCtrl.show);
 
-  router.param('poiId', poiCtrl.load) //TODO omit?
+  router.param('poiId', poiCtrl.load)
   router.param('tripId', tripCtrl.load);
 }

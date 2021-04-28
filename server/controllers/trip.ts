@@ -22,18 +22,18 @@ export default class TripCtrl extends BaseCtrl<ITripDocument> {
   getPaginated = (req, res) => {
     const pageOptions = {
       page: parseInt(req.query.page, 10) || 0,
-      limit: 10
+      limit: parseInt(req.query.size, 10) || 10
     }
     this.model.find({}, (err, docs) => {
       if (err) { return console.error(err); }
       res.json(docs);
     }).skip(pageOptions.page * pageOptions.limit)
-    .limit(10);
+    .limit(pageOptions.limit).select('-pois');
   };
 
   addPoiToTrip = (req, res, next) =>
-    this.model.findOneAndUpdate({ _id: req._id }, req.body, {new: true}) //TODO: how to update array
-      .then(m => (this.model.hasOwnProperty('load')) ? this.model['load'](m._id) : m)
+    this.model.findOneAndUpdate({ _id: req.trips._id }, { $addToSet: { pois: req.pois._id} }, {new: true})
+      .then(pfurzigacksi => (this.model.hasOwnProperty('load')) ? this.model['load'](pfurzigacksi._id) : pfurzigacksi)
       .then(m => req[this.model.collection.collectionName] = m)
       .then(() => next())
       .catch(err => {
@@ -42,7 +42,7 @@ export default class TripCtrl extends BaseCtrl<ITripDocument> {
       });
 
   removePoiFromTrip = (req, res, next) =>
-    this.model.findOneAndUpdate({ _id: req._id }, req.body, {new: true}) //TODO: how to update array
+    this.model.findOneAndUpdate({ _id: req.trips._id }, { $pull: { pois: req.pois._id} }, {new: true})
       .then(m => (this.model.hasOwnProperty('load')) ? this.model['load'](m._id) : m)
       .then(m => req[this.model.collection.collectionName] = m)
       .then(() => next())
