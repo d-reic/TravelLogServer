@@ -33,4 +33,6 @@ tripSchema.statics.load = function(id: mongoose.Schema.Types.ObjectId) {
   return this.findById(id).populate('creator', 'username').populate('pois');
 };
 
-export default mongoose.model<ITripDocument, ITripModel>('Trip', tripSchema);
+const Trip: ITripModel = mongoose.model<ITripDocument, ITripModel>('Trip', tripSchema);
+
+export default Trip

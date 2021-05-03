@@ -78,6 +78,14 @@ export interface IPOI {
   type: string;
   creator?: mongoose.Schema.Types.ObjectId|{_id: string, username: string}|IUser;
   createdAt?: Date
+  images?: Image[]
+}
+
+export interface Image {
+  id: mongoose.Schema.Types.ObjectId,
+  description?: string,
+  uploaded: Date,
+  user: string
 }
 
 export interface ITrip {
